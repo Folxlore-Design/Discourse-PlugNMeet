@@ -1,0 +1,57 @@
+<div class="meeting-rooms-sidebar">
+  {{#if this.loading}}
+    <div class="meeting-rooms-loading">
+      {{d-icon "spinner" class="fa-spin"}}
+      <span>{{i18n "plugnmeet.loading"}}</span>
+    </div>
+  {{else if this.hasRooms}}
+    <div class="meeting-rooms-list">
+      {{#each this.rooms as |room|}}
+        <div class="meeting-room-item" {{on "click" (fn this.joinRoom room)}}>
+          <div class="meeting-room-info">
+            <div class="meeting-room-name">
+              {{room.name}}
+            </div>
+            {{#if room.participant_count}}
+              <div class="meeting-room-presence">
+                <span class="presence-indicator active"></span>
+                <span class="participant-count">
+                  {{room.participant_count}}
+                  {{#if (eq room.participant_count 1)}}
+                    {{i18n "plugnmeet.person"}}
+                  {{else}}
+                    {{i18n "plugnmeet.people"}}
+                  {{/if}}
+                </span>
+              </div>
+            {{else}}
+              <div class="meeting-room-presence">
+                <span class="presence-indicator"></span>
+                <span class="participant-count">
+                  {{i18n "plugnmeet.empty"}}
+                </span>
+              </div>
+            {{/if}}
+          </div>
+          
+          {{#if room.participants}}
+            <div class="meeting-room-avatars">
+              {{#each room.participants as |participant|}}
+                <img 
+                  src={{avatar-url participant.avatar_template "small"}} 
+                  alt={{participant.username}}
+                  title={{participant.username}}
+                  class="meeting-room-avatar"
+                />
+              {{/each}}
+            </div>
+          {{/if}}
+        </div>
+      {{/each}}
+    </div>
+  {{else}}
+    <div class="meeting-rooms-empty">
+      <p>{{i18n "plugnmeet.no_rooms"}}</p>
+    </div>
+  {{/if}}
+</div>

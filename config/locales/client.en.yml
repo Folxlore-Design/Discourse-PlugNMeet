@@ -1,0 +1,32 @@
+en:
+  js:
+    plugnmeet:
+      loading: "Loading meeting rooms..."
+      no_rooms: "No meeting rooms available"
+      person: "person"
+      people: "people"
+      empty: "Empty"
+      join_room: "Click to join"
+      error:
+        generic: "An error occurred"
+        room_not_found: "Meeting room not found"
+        access_denied: "You don't have access to this room"
+        create_failed: "Failed to create room"
+      admin:
+        title: "Meeting Rooms"
+        create_room: "Create Room"
+        room_name: "Room Name"
+        allowed_groups: "Allowed Groups"
+        participants: "Participants"
+        created: "Created"
+        actions: "Actions"
+        all_users: "All Users"
+        no_rooms_yet: "No meeting rooms have been created yet."
+        create_first_room: "Click 'Create Room' to get started."
+        delete_room: "Delete Room"
+        create_room_modal_title: "Create Meeting Room"
+        room_name_label: "Room Name"
+        room_name_placeholder: "e.g., General Hangout"
+        allowed_groups_label: "Restrict to Groups (optional)"
+        allowed_groups_help: "Leave empty to allow all users, or select specific groups."
+        create: "Create Room"

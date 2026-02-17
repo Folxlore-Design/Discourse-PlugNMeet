@@ -1,0 +1,34 @@
+plugins:
+  plugnmeet_enabled:
+    default: false
+    client: true
+  plugnmeet_server_url:
+    default: ''
+    client: false
+    description: 'URL of your PlugNmeet server (e.g., https://meet.example.com)'
+  plugnmeet_api_key:
+    default: ''
+    client: false
+    secret: true
+    description: 'API Key from PlugNmeet'
+  plugnmeet_api_secret:
+    default: ''
+    client: false
+    secret: true
+    description: 'API Secret from PlugNmeet'
+  plugnmeet_livekit_url:
+    default: ''
+    client: false
+    description: 'LiveKit server URL (usually same as PlugNmeet server with port 7880)'
+  plugnmeet_popup_width:
+    default: 1200
+    client: true
+    min: 800
+    max: 1920
+    description: 'Width of popup window in pixels'
+  plugnmeet_popup_height:
+    default: 800
+    client: true
+    min: 600
+    max: 1080
+    description: 'Height of popup window in pixels'

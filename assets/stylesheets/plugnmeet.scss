@@ -1,0 +1,115 @@
+.meeting-rooms-sidebar {
+  padding: 0.5em;
+  
+  .meeting-rooms-loading {
+    display: flex;
+    align-items: center;
+    gap: 0.5em;
+    color: var(--primary-medium);
+    font-size: 0.9em;
+    padding: 1em;
+  }
+
+  .meeting-rooms-empty {
+    padding: 1em;
+    color: var(--primary-medium);
+    font-size: 0.9em;
+    text-align: center;
+  }
+
+  .meeting-rooms-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5em;
+  }
+
+  .meeting-room-item {
+    padding: 0.75em;
+    border-radius: 8px;
+    background: var(--primary-very-low);
+    cursor: pointer;
+    transition: all 0.2s ease;
+    
+    &:hover {
+      background: var(--primary-low);
+      transform: translateX(2px);
+    }
+
+    .meeting-room-info {
+      display: flex;
+      flex-direction: column;
+      gap: 0.25em;
+    }
+
+    .meeting-room-name {
+      font-weight: 600;
+      color: var(--primary);
+      font-size: 0.95em;
+    }
+
+    .meeting-room-presence {
+      display: flex;
+      align-items: center;
+      gap: 0.5em;
+      font-size: 0.85em;
+      color: var(--primary-medium);
+
+      .presence-indicator {
+        width: 8px;
+        height: 8px;
+        border-radius: 50%;
+        background: var(--primary-low-mid);
+        
+        &.active {
+          background: var(--success);
+          box-shadow: 0 0 4px var(--success);
+          animation: pulse 2s ease-in-out infinite;
+        }
+      }
+
+      .participant-count {
+        flex: 1;
+      }
+    }
+
+    .meeting-room-avatars {
+      display: flex;
+      margin-top: 0.5em;
+      margin-left: -4px;
+
+      .meeting-room-avatar {
+        width: 24px;
+        height: 24px;
+        border-radius: 50%;
+        border: 2px solid var(--secondary);
+        margin-left: -4px;
+        
+        &:first-child {
+          margin-left: 0;
+        }
+      }
+    }
+  }
+}
+
+@keyframes pulse {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.6;
+  }
+}
+
+// Responsive adjustments
+@media screen and (max-width: 768px) {
+  .meeting-rooms-sidebar {
+    .meeting-room-item {
+      padding: 1em;
+      
+      .meeting-room-name {
+        font-size: 1em;
+      }
+    }
+  }
+}

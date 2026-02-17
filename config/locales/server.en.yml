@@ -1,0 +1,23 @@
+en:
+  site_settings:
+    plugnmeet_enabled: "Enable PlugNmeet integration"
+    plugnmeet_server_url: "PlugNmeet server URL"
+    plugnmeet_api_key: "API Key"
+    plugnmeet_api_secret: "API Secret"
+    plugnmeet_livekit_url: "LiveKit server URL"
+    plugnmeet_popup_width: "Popup window width (pixels)"
+    plugnmeet_popup_height: "Popup window height (pixels)"
+  
+  js:
+    plugnmeet:
+      loading: "Loading meeting rooms..."
+      no_rooms: "No meeting rooms available"
+      person: "person"
+      people: "people"
+      empty: "Empty"
+      join_room: "Click to join"
+      error:
+        generic: "An error occurred"
+        room_not_found: "Meeting room not found"
+        access_denied: "You don't have access to this room"
+        create_failed: "Failed to create room"
