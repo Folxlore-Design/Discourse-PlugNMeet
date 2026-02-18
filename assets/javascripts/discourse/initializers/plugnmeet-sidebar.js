@@ -83,8 +83,8 @@ export default apiInitializer("1.8.0", (api) => {
           return true;
         }
 
-        get sectionLinks() {
-          console.log("[PlugNmeet] sectionLinks getter called, rooms.length:", this.rooms.length);
+        get links() {
+          console.log("[PlugNmeet] links getter called, rooms.length:", this.rooms.length);
           return this.rooms.map((room) => {
             // Each room gets a unique fragment href so we can identify it on click.
             const SectionLink = class extends BaseCustomSidebarSectionLink {
