@@ -100,6 +100,22 @@ export default apiInitializer("1.8.0", (api) => {
                 return room.name;
               }
 
+              get prefixType() {
+                return room.icon ? "emoji" : "icon";
+              }
+
+              get prefixValue() {
+                return room.icon || "video";
+              }
+
+              get suffixType() {
+                return room.allowed_group_ids?.length ? "icon" : null;
+              }
+
+              get suffixValue() {
+                return room.allowed_group_ids?.length ? "lock" : null;
+              }
+
               // Fragment href — navigation is intercepted below via capture listener.
               get href() {
                 return `#plugnmeet-room-${room.id}`;

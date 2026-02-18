@@ -3,6 +3,7 @@
 require 'jwt'
 require 'net/http'
 require 'json'
+require 'openssl'
 
 module DiscoursePlugnmeet
   class PlugnmeetClient
@@ -89,11 +90,14 @@ module DiscoursePlugnmeet
         http = Net::HTTP.new(uri.host, uri.port)
         http.use_ssl = uri.scheme == 'https'
 
+        body = payload.to_json
+        signature = OpenSSL::HMAC.hexdigest('SHA256', api_secret, body)
+
         request = Net::HTTP::Post.new(uri.path)
         request['Content-Type'] = 'application/json'
         request['API-KEY'] = api_key
-        request['API-SECRET'] = api_secret
-        request.body = payload.to_json
+        request['HASH-SIGNATURE'] = signature
+        request.body = body
 
         response = http.request(request)
         JSON.parse(response.body)
