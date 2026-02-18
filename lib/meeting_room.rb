@@ -22,8 +22,9 @@ module DiscoursePlugnmeet
 
     def self.visible_to_user(user)
       return [] unless user
+      return all if user.staff?
+
       user_group_ids = user.groups.pluck(:id)
-      
       all.select do |room|
         # If no groups specified, visible to all
         room.allowed_group_ids.empty? || (room.allowed_group_ids & user_group_ids).any?
@@ -97,6 +98,8 @@ module DiscoursePlugnmeet
 
     def user_can_access?(user)
       return false unless user
+      return true if user.staff?
+
       user_group_ids = user.groups.pluck(:id)
       allowed_group_ids.empty? || (allowed_group_ids & user_group_ids).any?
     end

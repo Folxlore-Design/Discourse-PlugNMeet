@@ -2,7 +2,7 @@ import Component from "@glimmer/component";
 import { tracked } from "@glimmer/tracking";
 import { action } from "@ember/object";
 import { service } from "@ember/service";
-import { fn, concat } from "@ember/helper";
+import { fn, concat, get } from "@ember/helper";
 import { on } from "@ember/modifier";
 import { not } from "truth-helpers";
 import { ajax } from "discourse/lib/ajax";
@@ -143,6 +143,14 @@ export default class PlugnmeetAdminRooms extends Component {
     this.formGroupIds = groupIds;
   }
 
+  get groupsById() {
+    const obj = {};
+    (this.site.groups || []).forEach((g) => {
+      obj[g.id] = g.name;
+    });
+    return obj;
+  }
+
   <template>
     <div class="admin-meeting-rooms">
       <div class="admin-meeting-rooms-header">
@@ -189,7 +197,7 @@ export default class PlugnmeetAdminRooms extends Component {
                 <td>
                   {{#if room.allowed_group_ids.length}}
                     {{#each room.allowed_group_ids as |gid|}}
-                      <span class="badge-group">{{gid}}</span>
+                      <span class="badge-group">{{get this.groupsById gid}}</span>
                     {{/each}}
                   {{else}}
                     <em>{{i18n "plugnmeet.admin.all_users"}}</em>
@@ -262,7 +270,7 @@ export default class PlugnmeetAdminRooms extends Component {
                   {{#if this.showEmojiPicker}}
                     <EmojiPicker
                       @isActive={{this.showEmojiPicker}}
-                      @emojiSelected={{this.onEmojiSelected}}
+                      @onEmojiPick={{this.onEmojiSelected}}
                       @onClose={{this.toggleEmojiPicker}}
                     />
                   {{/if}}

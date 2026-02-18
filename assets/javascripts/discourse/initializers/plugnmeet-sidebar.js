@@ -1,5 +1,4 @@
 import { tracked } from "@glimmer/tracking";
-import { service } from "@ember/service";
 import { apiInitializer } from "discourse/lib/api";
 import { ajax } from "discourse/lib/ajax";
 import MeetingRoomsSidebar from "../components/meeting-rooms-sidebar";
@@ -35,7 +34,6 @@ export default apiInitializer("1.8.0", (api) => {
       };
 
       const MeetingRoomsSection = class extends BaseCustomSidebarSection {
-        @service siteSettings;
         @tracked hasRooms = false;
         @tracked loaded = false;
 
@@ -58,16 +56,18 @@ export default apiInitializer("1.8.0", (api) => {
         }
 
         get title() {
-          return this.siteSettings.plugnmeet_sidebar_title || "Meeting Rooms";
+          // Use the outer closure variable — @service injection is unreliable
+          // inside addSidebarSection classes.
+          return siteSettings.plugnmeet_sidebar_title || "Meeting Rooms";
         }
 
         get text() {
           return this.title;
         }
 
-        // Only show the section if the user can see at least one room.
+        // Show while the check is in-flight; hide only if loaded with zero rooms.
         get displaySection() {
-          return this.loaded && this.hasRooms;
+          return !this.loaded || this.hasRooms;
         }
 
         get hideSectionHeader() {

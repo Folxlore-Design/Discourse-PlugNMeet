@@ -10,6 +10,9 @@ enabled_site_setting :plugnmeet_enabled
 
 register_asset 'stylesheets/plugnmeet.scss'
 
+register_svg_icon "pencil-alt"
+register_svg_icon "trash-alt"
+
 after_initialize do
   module ::DiscoursePlugnmeet
     PLUGIN_NAME = "discourse-plugnmeet"
