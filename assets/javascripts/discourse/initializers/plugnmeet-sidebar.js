@@ -46,11 +46,17 @@ export default apiInitializer("1.8.0", (api) => {
 
         constructor() {
           super(...arguments);
+          console.log("[PlugNmeet] MeetingRoomsSection constructor called");
           ajax("/plugnmeet/rooms")
             .then((r) => {
+              console.log("[PlugNmeet] AJAX success, raw response:", r);
+              console.log("[PlugNmeet] rooms array:", r.rooms);
               this.rooms = r.rooms || [];
+              console.log("[PlugNmeet] this.rooms set, length:", this.rooms.length);
             })
-            .catch(() => {});
+            .catch((err) => {
+              console.error("[PlugNmeet] AJAX failed:", err);
+            });
         }
 
         get name() {
@@ -78,6 +84,7 @@ export default apiInitializer("1.8.0", (api) => {
         }
 
         get sectionLinks() {
+          console.log("[PlugNmeet] sectionLinks getter called, rooms.length:", this.rooms.length);
           return this.rooms.map((room) => {
             // Each room gets a unique fragment href so we can identify it on click.
             const SectionLink = class extends BaseCustomSidebarSectionLink {
