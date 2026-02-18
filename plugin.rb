@@ -12,6 +12,8 @@ register_asset 'stylesheets/plugnmeet.scss'
 
 register_svg_icon "pencil-alt"
 register_svg_icon "trash-alt"
+register_svg_icon "pencil"
+register_svg_icon "trash-can"
 
 after_initialize do
   module ::DiscoursePlugnmeet

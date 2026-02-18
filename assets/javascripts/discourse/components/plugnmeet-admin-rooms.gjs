@@ -2,7 +2,7 @@ import Component from "@glimmer/component";
 import { tracked } from "@glimmer/tracking";
 import { action } from "@ember/object";
 import { service } from "@ember/service";
-import { fn, concat, get } from "@ember/helper";
+import { fn, concat } from "@ember/helper";
 import { on } from "@ember/modifier";
 import { not } from "truth-helpers";
 import { ajax } from "discourse/lib/ajax";
@@ -12,9 +12,6 @@ import DButton from "discourse/components/d-button";
 import DModal from "discourse/components/d-modal";
 import replaceEmoji from "discourse/helpers/replace-emoji";
 import GroupChooser from "select-kit/components/group-chooser";
-// NOTE: If EmojiPicker import fails, grep Discourse source for the correct path:
-// grep -r "class EmojiPicker" /var/www/discourse/frontend --include="*.gjs" -l
-import EmojiPicker from "discourse/components/emoji-picker";
 
 export default class PlugnmeetAdminRooms extends Component {
   @service site;
@@ -28,7 +25,6 @@ export default class PlugnmeetAdminRooms extends Component {
   @tracked formName = "";
   @tracked formIcon = "";
   @tracked formGroupIds = [];
-  @tracked showEmojiPicker = false;
 
   constructor() {
     super(...arguments);
@@ -53,7 +49,6 @@ export default class PlugnmeetAdminRooms extends Component {
     this.formIcon = "";
     this.formGroupIds = [];
     this.showModal = true;
-    this.showEmojiPicker = false;
   }
 
   @action
@@ -63,14 +58,12 @@ export default class PlugnmeetAdminRooms extends Component {
     this.formIcon = room.icon || "";
     this.formGroupIds = [...(room.allowed_group_ids || [])];
     this.showModal = true;
-    this.showEmojiPicker = false;
   }
 
   @action
   closeModal() {
     this.showModal = false;
     this.editingRoom = null;
-    this.showEmojiPicker = false;
   }
 
   @action
@@ -123,32 +116,18 @@ export default class PlugnmeetAdminRooms extends Component {
   }
 
   @action
-  onEmojiSelected(emoji) {
-    this.formIcon = emoji;
-    this.showEmojiPicker = false;
-  }
-
-  @action
-  toggleEmojiPicker() {
-    this.showEmojiPicker = !this.showEmojiPicker;
-  }
-
-  @action
   updateFormName(event) {
     this.formName = event.target.value;
   }
 
   @action
-  updateGroups(groupIds) {
-    this.formGroupIds = groupIds;
+  updateFormIcon(event) {
+    this.formIcon = event.target.value;
   }
 
-  get groupsById() {
-    const obj = {};
-    (this.site.groups || []).forEach((g) => {
-      obj[g.id] = g.name;
-    });
-    return obj;
+  @action
+  updateGroups(groupIds) {
+    this.formGroupIds = groupIds;
   }
 
   <template>
@@ -195,9 +174,9 @@ export default class PlugnmeetAdminRooms extends Component {
                   <strong>{{room.name}}</strong>
                 </td>
                 <td>
-                  {{#if room.allowed_group_ids.length}}
-                    {{#each room.allowed_group_ids as |gid|}}
-                      <span class="badge-group">{{get this.groupsById gid}}</span>
+                  {{#if room.allowed_groups.length}}
+                    {{#each room.allowed_groups as |group|}}
+                      <span class="badge-group">{{group.name}}</span>
                     {{/each}}
                   {{else}}
                     <em>{{i18n "plugnmeet.admin.all_users"}}</em>
@@ -208,13 +187,13 @@ export default class PlugnmeetAdminRooms extends Component {
                 <td class="room-actions">
                   <DButton
                     @action={{fn this.openEdit room}}
-                    @icon="pencil-alt"
+                    @icon="pencil"
                     @title="plugnmeet.admin.edit_room"
                     class="btn-default btn-small"
                   />
                   <DButton
                     @action={{fn this.deleteRoom room}}
-                    @icon="trash-alt"
+                    @icon="trash-can"
                     @title="plugnmeet.admin.delete_room"
                     class="btn-danger btn-small"
                   />
@@ -255,24 +234,17 @@ export default class PlugnmeetAdminRooms extends Component {
               <div class="control-group">
                 <label>{{i18n "plugnmeet.admin.room_icon_label"}}</label>
                 <div class="room-icon-selector">
-                  <button
-                    type="button"
-                    class="btn btn-default emoji-trigger"
-                    {{on "click" this.toggleEmojiPicker}}
-                  >
-                    {{#if this.formIcon}}
+                  <input
+                    type="text"
+                    value={{this.formIcon}}
+                    placeholder="e.g. hammer_and_wrench"
+                    class="emoji-name-input"
+                    {{on "input" this.updateFormIcon}}
+                  />
+                  {{#if this.formIcon}}
+                    <span class="emoji-preview">
                       {{replaceEmoji (concat ":" this.formIcon ":")}}
-                      <span class="emoji-name">{{this.formIcon}}</span>
-                    {{else}}
-                      {{i18n "plugnmeet.admin.choose_icon"}}
-                    {{/if}}
-                  </button>
-                  {{#if this.showEmojiPicker}}
-                    <EmojiPicker
-                      @isActive={{this.showEmojiPicker}}
-                      @onEmojiPick={{this.onEmojiSelected}}
-                      @onClose={{this.toggleEmojiPicker}}
-                    />
+                    </span>
                   {{/if}}
                 </div>
               </div>

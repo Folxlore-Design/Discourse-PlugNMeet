@@ -2,7 +2,11 @@
 
 module DiscoursePlugnmeet
   class MeetingRoomSerializer < ApplicationSerializer
-    attributes :id, :name, :icon, :allowed_group_ids, :created_at, :participant_count, :participants
+    attributes :id, :name, :icon, :allowed_group_ids, :allowed_groups, :created_at, :participant_count, :participants
+
+    def allowed_groups
+      Group.where(id: object.allowed_group_ids).map { |g| { id: g.id, name: g.name } }
+    end
 
     def participant_count
       object.participant_count

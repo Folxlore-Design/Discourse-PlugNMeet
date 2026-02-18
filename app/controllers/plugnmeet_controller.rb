@@ -14,12 +14,18 @@ module DiscoursePlugnmeet
                 MeetingRoom.visible_to_user(current_user)
               end
 
+      group_names = Group.where(id: rooms.flat_map(&:allowed_group_ids).uniq).each_with_object({}) do |g, h|
+        h[g.id] = g.name
+      end
+
       rooms_with_presence = rooms.map do |room|
         {
           id: room.id,
           name: room.name,
           icon: room.icon,
           allowed_group_ids: room.allowed_group_ids,
+          allowed_groups: room.allowed_group_ids.map { |gid| { id: gid, name: group_names[gid] } },
+          created_at: room.created_at,
           participant_count: room.participant_count,
           participants: room.participants.limit(5).map { |u| { id: u.id, username: u.username, avatar_template: u.avatar_template } }
         }
