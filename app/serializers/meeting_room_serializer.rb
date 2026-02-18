@@ -2,7 +2,7 @@
 
 module DiscoursePlugnmeet
   class MeetingRoomSerializer < ApplicationSerializer
-    attributes :id, :name, :allowed_group_ids, :created_at, :participant_count, :participants
+    attributes :id, :name, :icon, :allowed_group_ids, :created_at, :participant_count, :participants
 
     def participant_count
       object.participant_count

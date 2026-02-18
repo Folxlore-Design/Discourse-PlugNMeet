@@ -1,47 +1,90 @@
+import { tracked } from "@glimmer/tracking";
+import { service } from "@ember/service";
 import { apiInitializer } from "discourse/lib/api";
+import { ajax } from "discourse/lib/ajax";
 import MeetingRoomsSidebar from "../components/meeting-rooms-sidebar";
 
 export default apiInitializer("1.8.0", (api) => {
   const siteSettings = api.container.lookup("service:site-settings");
-  
+
   if (!siteSettings.plugnmeet_enabled) {
     return;
   }
 
-  // Add meeting rooms section to sidebar
-  api.addCommunitySectionLink((baseSectionLink) => {
-    return class extends baseSectionLink {
-      get name() {
-        return "meeting-rooms";
-      }
+  api.addSidebarSection(
+    (BaseCustomSidebarSection, BaseCustomSidebarSectionLink) => {
+      // A single link item whose contentComponent renders the full rooms panel.
+      // This gives us the proper collapsible section header while keeping
+      // MeetingRoomsSidebar in charge of display and click-to-join behaviour.
+      const MeetingRoomsContent = class extends BaseCustomSidebarSectionLink {
+        get name() {
+          return "plugnmeet-rooms-content";
+        }
 
-      get route() {
-        return "discovery.latest";
-      }
+        get text() {
+          return "";
+        }
 
-      get title() {
-        return "Meeting Rooms";
-      }
+        get title() {
+          return "";
+        }
 
-      get text() {
-        return "Meeting Rooms";
-      }
+        get contentComponent() {
+          return MeetingRoomsSidebar;
+        }
+      };
 
-      get prefixType() {
-        return "icon";
-      }
+      const MeetingRoomsSection = class extends BaseCustomSidebarSection {
+        @service siteSettings;
+        @tracked hasRooms = false;
+        @tracked loaded = false;
 
-      get prefixValue() {
-        return "video";
-      }
+        constructor() {
+          super(...arguments);
+          // One lightweight visibility check — MeetingRoomsSidebar handles
+          // its own full data loading and polling separately.
+          ajax("/plugnmeet/rooms")
+            .then((response) => {
+              this.hasRooms = (response.rooms || []).length > 0;
+              this.loaded = true;
+            })
+            .catch(() => {
+              this.loaded = true;
+            });
+        }
 
-      get contentComponent() {
-        return MeetingRoomsSidebar;
-      }
+        get name() {
+          return "plugnmeet-meeting-rooms";
+        }
 
-      get displaySection() {
-        return true;
-      }
-    };
-  });
+        get title() {
+          return this.siteSettings.plugnmeet_sidebar_title || "Meeting Rooms";
+        }
+
+        get text() {
+          return this.title;
+        }
+
+        // Only show the section if the user can see at least one room.
+        get displaySection() {
+          return this.loaded && this.hasRooms;
+        }
+
+        get hideSectionHeader() {
+          return false;
+        }
+
+        get allowEmpty() {
+          return true;
+        }
+
+        get sectionLinks() {
+          return [new MeetingRoomsContent()];
+        }
+      };
+
+      return MeetingRoomsSection;
+    },
+    "main"
+  );
 });

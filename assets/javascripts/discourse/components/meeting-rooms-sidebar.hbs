@@ -8,6 +8,11 @@
     <div class="meeting-rooms-list">
       {{#each this.rooms as |room|}}
         <div class="meeting-room-item" {{on "click" (fn this.joinRoom room)}}>
+          {{#if room.icon}}
+            <span class="meeting-room-icon">
+              {{replaceEmoji (concat ":" room.icon ":")}}
+            </span>
+          {{/if}}
           <div class="meeting-room-info">
             <div class="meeting-room-name">
               {{room.name}}
@@ -33,12 +38,12 @@
               </div>
             {{/if}}
           </div>
-          
+
           {{#if room.participants}}
             <div class="meeting-room-avatars">
               {{#each room.participants as |participant|}}
-                <img 
-                  src={{avatar-url participant.avatar_template "small"}} 
+                <img
+                  src={{avatar-url participant.avatar_template "small"}}
                   alt={{participant.username}}
                   title={{participant.username}}
                   class="meeting-room-avatar"

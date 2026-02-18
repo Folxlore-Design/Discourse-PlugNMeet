@@ -8,12 +8,18 @@ module DiscoursePlugnmeet
     skip_before_action :verify_authenticity_token, only: [:webhook]
 
     def list_rooms
-      rooms = MeetingRoom.visible_to_user(current_user)
-      
+      rooms = if params[:all] && current_user.staff?
+                MeetingRoom.all
+              else
+                MeetingRoom.visible_to_user(current_user)
+              end
+
       rooms_with_presence = rooms.map do |room|
         {
           id: room.id,
           name: room.name,
+          icon: room.icon,
+          allowed_group_ids: room.allowed_group_ids,
           participant_count: room.participant_count,
           participants: room.participants.limit(5).map { |u| { id: u.id, username: u.username, avatar_template: u.avatar_template } }
         }
@@ -66,18 +72,33 @@ module DiscoursePlugnmeet
 
     def create_room
       params.require(:name)
-      
+
       unless current_user.staff?
         return render_json_error("Only staff can create rooms", status: 403)
       end
 
-      allowed_group_ids = params[:allowed_group_ids] || []
-      
       room = MeetingRoom.create(
         name: params[:name],
-        allowed_group_ids: allowed_group_ids,
+        icon: params[:icon].presence,
+        allowed_group_ids: (params[:allowed_group_ids] || []).map(&:to_i),
         created_by_id: current_user.id
       )
+
+      render json: MeetingRoomSerializer.new(room, root: false)
+    end
+
+    def update_room
+      unless current_user.staff?
+        return render_json_error("Only staff can edit rooms", status: 403)
+      end
+
+      room = MeetingRoom.find(params[:id])
+      return render_json_error("Room not found", status: 404) unless room
+
+      room.name = params[:name] if params[:name].present?
+      room.icon = params[:icon].presence
+      room.allowed_group_ids = (params[:allowed_group_ids] || []).map(&:to_i)
+      room.save
 
       render json: MeetingRoomSerializer.new(room, root: false)
     end

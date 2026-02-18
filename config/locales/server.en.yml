@@ -7,6 +7,7 @@ en:
     plugnmeet_livekit_url: "LiveKit server URL"
     plugnmeet_popup_width: "Popup window width (pixels)"
     plugnmeet_popup_height: "Popup window height (pixels)"
+    plugnmeet_sidebar_title: "Sidebar section title"
   
   js:
     plugnmeet:

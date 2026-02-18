@@ -25,7 +25,6 @@ export default class MeetingRoomsSidebar extends Component {
   }
 
   startPolling() {
-    // Poll for presence updates every 10 seconds
     this.pollTimer = setInterval(() => {
       this.loadRooms();
     }, 10000);
@@ -47,30 +46,26 @@ export default class MeetingRoomsSidebar extends Component {
   async joinRoom(room) {
     try {
       const response = await ajax(`/plugnmeet/rooms/${room.id}/join`);
-      
+
       if (this.capabilities.isIOS || this.capabilities.isAndroid) {
-        // Mobile: full page redirect
         window.location.href = response.join_url;
       } else {
-        // Desktop: popup window
         const width = this.siteSettings.plugnmeet_popup_width;
         const height = this.siteSettings.plugnmeet_popup_height;
         const left = (screen.width - width) / 2;
         const top = (screen.height - height) / 2;
-        
+
         const windowFeatures = `width=${width},height=${height},left=${left},top=${top},toolbar=no,menubar=no,scrollbars=yes,resizable=yes`;
-        
+
         const popup = window.open(
           response.join_url,
           `plugnmeet_${room.id}`,
           windowFeatures
         );
-        
+
         if (!popup) {
-          // Popup blocked, fallback to new tab
-          window.open(response.join_url, '_blank');
+          window.open(response.join_url, "_blank");
         } else {
-          // Focus the popup
           popup.focus();
         }
       }

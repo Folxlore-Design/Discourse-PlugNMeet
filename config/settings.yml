@@ -2,6 +2,10 @@ plugins:
   plugnmeet_enabled:
     default: false
     client: true
+  plugnmeet_sidebar_title:
+    default: "Meeting Rooms"
+    client: true
+    description: "Title shown on the sidebar section header"
   plugnmeet_server_url:
     default: ''
     client: false

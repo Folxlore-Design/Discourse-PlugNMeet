@@ -4,7 +4,7 @@ module DiscoursePlugnmeet
   class MeetingRoom
     include ActiveModel::Serialization
 
-    attr_accessor :id, :name, :allowed_group_ids, :created_at, :created_by_id
+    attr_accessor :id, :name, :icon, :allowed_group_ids, :created_at, :created_by_id
 
     def self.plugin_store
       @plugin_store ||= PluginStore.new('discourse-plugnmeet')
@@ -30,10 +30,11 @@ module DiscoursePlugnmeet
       end
     end
 
-    def self.create(name:, allowed_group_ids:, created_by_id:)
+    def self.create(name:, icon: nil, allowed_group_ids:, created_by_id:)
       room = new(
         id: SecureRandom.uuid,
         name: name,
+        icon: icon,
         allowed_group_ids: allowed_group_ids || [],
         created_at: Time.now,
         created_by_id: created_by_id
@@ -46,15 +47,17 @@ module DiscoursePlugnmeet
       room = new
       room.id = data['id']
       room.name = data['name']
+      room.icon = data['icon']
       room.allowed_group_ids = data['allowed_group_ids'] || []
       room.created_at = data['created_at'] ? Time.parse(data['created_at']) : nil
       room.created_by_id = data['created_by_id']
       room
     end
 
-    def initialize(id: nil, name: nil, allowed_group_ids: [], created_at: nil, created_by_id: nil)
+    def initialize(id: nil, name: nil, icon: nil, allowed_group_ids: [], created_at: nil, created_by_id: nil)
       @id = id
       @name = name
+      @icon = icon
       @allowed_group_ids = allowed_group_ids
       @created_at = created_at
       @created_by_id = created_by_id
@@ -85,6 +88,7 @@ module DiscoursePlugnmeet
       {
         'id' => id,
         'name' => name,
+        'icon' => icon,
         'allowed_group_ids' => allowed_group_ids,
         'created_at' => created_at&.iso8601,
         'created_by_id' => created_by_id

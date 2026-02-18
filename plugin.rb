@@ -3,8 +3,8 @@
 # name: discourse-plugnmeet
 # about: Integrates PlugNmeet video conferencing with Discourse
 # version: 0.1.0
-# authors: Your Name
-# url: https://github.com/yourusername/discourse-plugnmeet
+# authors: Branwyn Tylwyth
+# url: https://github.com/Folxlore-Design/discourse-plugnmeet
 
 enabled_site_setting :plugnmeet_enabled
 
@@ -42,6 +42,7 @@ after_initialize do
     get "/rooms" => "plugnmeet#list_rooms"
     get "/rooms/:id/join" => "plugnmeet#join_room"
     post "/rooms" => "plugnmeet#create_room"
+    patch "/rooms/:id" => "plugnmeet#update_room"
     delete "/rooms/:id" => "plugnmeet#delete_room"
     post "/webhook" => "plugnmeet#webhook"
     get "/rooms/:id/presence" => "plugnmeet#room_presence"
