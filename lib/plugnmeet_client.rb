@@ -1,6 +1,5 @@
 # frozen_string_literal: true
 
-require 'jwt'
 require 'net/http'
 require 'json'
 require 'openssl'
@@ -53,18 +52,15 @@ module DiscoursePlugnmeet
           }
         }
 
-        token = JWT.encode(
-          payload.merge(
-            iss: api_key,
-            nbf: Time.now.to_i,
-            exp: (Time.now + 24.hours).to_i
-          ),
-          api_secret,
-          'HS256'
-        )
+        response = make_request('/auth/room/getJoinToken', payload)
 
-        join_url = "#{server_url}/?access_token=#{token}"
-        { success: true, token: token, join_url: join_url }
+        if response['status']
+          token = response['token']
+          join_url = "#{server_url}/?access_token=#{token}"
+          { success: true, token: token, join_url: join_url }
+        else
+          { success: false, error: response['msg'] || 'Unknown error' }
+        end
       rescue => e
         { success: false, error: e.message }
       end
