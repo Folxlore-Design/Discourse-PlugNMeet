@@ -33,7 +33,7 @@ module DiscoursePlugnmeet
           }
         }
 
-        response = make_request('/api/room/create', payload)
+        response = make_request('/auth/room/create', payload)
         
         if response['status']
           { success: true, room_id: room_id }
@@ -71,14 +71,14 @@ module DiscoursePlugnmeet
 
       def end_room(room_id)
         payload = { room_id: room_id }
-        response = make_request('/api/room/end', payload)
+        response = make_request('/auth/room/end', payload)
         
         { success: response['status'] == true }
       end
 
       def is_room_active?(room_id)
         payload = { room_ids: [room_id] }
-        response = make_request('/api/room/get-active-room-info', payload)
+        response = make_request('/auth/room/getActiveRoomInfo', payload)
         
         response['status'] && response['result']&.any?
       end
